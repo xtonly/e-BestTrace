@@ -277,7 +277,7 @@ while true; do
         5) run_tests "CM" "仅移动"; pause_and_return ;;
         6) run_tests "EDU" "仅教育网"; pause_and_return ;;
         7) run_custom_test; pause_and_return ;;
-        0) clear; echo -e "${GREEN}按任意键返回...${RESET}"; exit 0 ;;
+        0) clear; echo -e "${GREEN}Bye${RESET}"; exit 0 ;;
         *) echo -e "${RED}输入无效，请重新输入！${RESET}"; sleep 1 ;;
     esac
 done
