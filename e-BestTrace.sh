@@ -179,7 +179,7 @@ run_tests() {
     init_arrays
     clear
     
-    echo -e "${CYAN}================== 开始测试 (模式: $mode_name) ==================${RESET}"
+    echo -e "${CYAN}===================== 开始测试 (模式: $mode_name) =====================${RESET}"
     echo -e "${BLUE}>> 正在使用协议:${RESET} ${YELLOW}${TRACE_PROTO}${RESET}"
     print_sep
 
