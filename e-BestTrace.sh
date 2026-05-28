@@ -1,7 +1,7 @@
 #!/bin/bash
 # =========================================================
 # e-BestTrace - Linux VPS 回程路由一键测试 (增强交互版)
-# 融合 eTraffic 5.5 UI 布局，新增 ICMP/TCP 协议切换
+# 融合 eTraffic 5.6 UI 布局，新增 ICMP/TCP 协议切换
 # 更新：修复 NextTrace ICMP 默认参数解析错误
 # =========================================================
 
@@ -256,7 +256,7 @@ SYS_OS=$(grep -E '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d '"' || ec
 while true; do
     clear
     echo -e "${MAGENTA}=========================================================${RESET}"
-    echo -e "${CYAN}         e-BestTrace - Linux VPS 回程路由一键测试        ${RESET}"
+    echo -e "${CYAN}      e-BestTrace - Linux VPS 回程路由一键测试 V1.0          ${RESET}"
     echo -e "${MAGENTA}=========================================================${RESET}"
     echo -e " ${BLUE}系统环境 :${RESET} ${WHITE}${SYS_OS}${RESET}"
     echo -e " ${BLUE}当前协议 :${RESET} ${GREEN}${BOLD}${TRACE_PROTO}${RESET} ${YELLOW}(选1进行切换)${RESET}"
