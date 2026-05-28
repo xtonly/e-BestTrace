@@ -2,7 +2,7 @@
 # =========================================================
 # e-BestTrace - Linux VPS 回程路由一键测试 (增强交互版)
 # 融合 eTraffic 5.5 UI 布局，新增 ICMP/TCP 协议切换
-# 更新：集成防 API 频率限制 (Rate Limit) 机制
+# 更新：修复 NextTrace ICMP 默认参数解析错误
 # =========================================================
 
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -20,7 +20,8 @@ BOLD='\033[1m'
 
 # ================== 全局状态变量 ==================
 TRACE_PROTO="ICMP"
-PROTO_FLAG="-I"
+# 修复核心：NextTrace 默认即为 ICMP，不需要也不存在 -I 参数
+PROTO_FLAG=""
 
 # 初始化汇总分类数组 (每次运行测试前需清空)
 init_arrays() {
@@ -203,11 +204,10 @@ run_tests() {
         if $should_run; then
             ((count++))
             echo -e "正在测试: ${GREEN}${target_name}${RESET} [${target_ip}]"
-            # 集成修改 1：加入 -d ipinfo 强制使用 IPInfo 库，避开 NextTrace 官方 API 限制
-            nexttrace $PROTO_FLAG "$target_ip" -q 1 -M -d ipinfo | tee /tmp/nt_temp.log
+            # 规范命令结构：将 target_ip 放在参数最后，并调用 -d ipinfo 防护限制
+            nexttrace $PROTO_FLAG -q 1 -M -d ipinfo "$target_ip" | tee /tmp/nt_temp.log
             analyze_route "$(cat /tmp/nt_temp.log)" "$isp_type" "$target_name" "$target_ip"
             print_sep
-            # 集成修改 2：延长休眠时间至 5 秒，彻底避免触发并发管控
             sleep 5
         fi
     done
@@ -227,8 +227,7 @@ run_custom_test() {
     echo -e "\n${CYAN}================ 正在测试: ${GREEN}自定义测速点${CYAN} [${custom_ip}] ================${RESET}"
     echo -e "${BLUE}>> 正在使用协议:${RESET} ${YELLOW}${TRACE_PROTO}${RESET}\n"
     
-    # 自定义测试也同样加入 -d ipinfo 参数
-    nexttrace $PROTO_FLAG "$custom_ip" -q 1 -M -d ipinfo | tee /tmp/nt_temp.log
+    nexttrace $PROTO_FLAG -q 1 -M -d ipinfo "$custom_ip" | tee /tmp/nt_temp.log
     raw_log=$(cat /tmp/nt_temp.log)
     detected_isp=$(detect_isp_type "$raw_log")
     analyze_route "$raw_log" "$detected_isp" "自定义测速点" "$custom_ip"
@@ -243,7 +242,7 @@ toggle_protocol() {
         echo -e "\n${GREEN}>> 测试协议已切换为: TCP${RESET}"
     else
         TRACE_PROTO="ICMP"
-        PROTO_FLAG="-I"
+        PROTO_FLAG=""
         echo -e "\n${GREEN}>> 测试协议已切换为: ICMP${RESET}"
     fi
     sleep 1.5
